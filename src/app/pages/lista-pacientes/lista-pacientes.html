@@ -1,0 +1,257 @@
+<!-- Campo de Busca -->
+<div class="flex justify-center mt-6">
+  <div class="w-full max-w-7xl">
+    <form #buscaForm="ngForm" (ngSubmit)="pesquisar()">
+      <!-- Card de Busca -->
+      <div class="bg-white border border-gray-300 rounded-lg shadow-sm">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-bold text-gray-900">Pacientes</h2>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Campo Nome -->
+            <div class="w-full">
+              <label for="nomeBusca" class="block text-sm font-medium text-gray-700 mb-1">
+                Nome:
+              </label>
+              <input
+                id="nomeBusca"
+                name="nomeBusca"
+                [(ngModel)]="nomeBusca"
+                type="text"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+
+            <!-- Campo CPF -->
+            <div class="w-full">
+              <label for="cpfBusca" class="block text-sm font-medium text-gray-700 mb-1">
+                CPF:
+              </label>
+              <input
+                id="cpf"
+                name="cpf"
+                [(ngModel)]="cpfBusca"
+                type="text"
+                #cpf="ngModel"
+                mask="000.000.000-00"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+
+            <!-- Campo CNS -->
+            <div class="w-full">
+              <label for="cnsBusca" class="block text-sm font-medium text-gray-700 mb-1">
+                CNS:
+              </label>
+              <input
+                id="cnsBusca"
+                name="cnsBusca"
+                [(ngModel)]="cnsBusca"
+                type="text"
+                mask="000 0000 0000 0000"
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+          <div class="flex gap-3">
+            <button
+              type="submit"
+              class="inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 transition-colors"
+            >
+              <!-- Ícone Search -->
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
+              Pesquisar
+            </button>
+
+            <button
+              type="button"
+              (click)="salvarPaciente(paciente)"
+              class="inline-flex items-center px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            >
+              <!-- Ícone Search -->
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-5 0 32 28" stroke-width="0.1" stroke="currentColor" class="size-6">
+                <path fill="currentColor" d="M18 14v-3h-3V9h3V6h2v3h3v2h-3v3h-2Zm-9-2q-1.65 0-2.825-1.175T5 8q0-1.65 1.175-2.825T9 4q1.65 0 2.825 1.175T13 8q0 1.65-1.175 2.825T9 12Zm-8 8v-2.8q0-.85.438-1.563T2.6 14.55q1.55-.775 3.15-1.163T9 13q1.65 0 3.25.388t3.15 1.162q.725.375 1.163 1.088T17 17.2V20H1Zm2-2h12v-.8q0-.275-.138-.5t-.362-.35q-1.35-.675-2.725-1.012T9 15q-1.4 0-2.775.338T3.5 16.35q-.225.125-.363.35T3 17.2v.8Zm6-8q.825 0 1.413-.588T11 8q0-.825-.588-1.413T9 6q-.825 0-1.413.588T7 8q0 .825.588 1.413T9 10Zm0-2Zm0 10Z"/>
+              </svg>
+              Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Lista de Pacientes -->
+<div class="flex justify-center m-6 mb-6">
+  <div class="w-full max-w-7xl">
+    <!-- Card de Resultado -->
+    <div class="bg-white border border-gray-300 rounded-lg shadow-sm">
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+        <h2 class="text-xl font-bold text-gray-900">Resultado</h2>
+        <span class="text-sm text-gray-500">
+          {{ listaPacientes.length }} paciente(s) encontrado(s)
+        </span>
+      </div>
+
+      <!-- Content -->
+      <div class="p-6">
+        <!-- Tabela Responsiva -->
+        <div class="overflow-x-auto">
+          <table class="w-full border-collapse">
+            <!-- Header da Tabela -->
+            <thead>
+              <tr class="border-b border-gray-200 bg-gray-50">
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Nome
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  RG
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  CPF
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  CNS
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Celular
+                </th>
+                
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ações
+                </th>
+              </tr>
+            </thead>
+
+            <!-- Body da Tabela -->
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let paciente of listaPacientes" class="hover:bg-gray-50 transition-colors">
+                <!-- Nome -->
+                <td class="px-4 py-4 text-sm text-gray-900">
+                  {{ paciente.nome }}
+                </td>
+
+                <!-- RG -->
+                <td class="px-4 py-4 text-sm text-gray-900">
+                  {{ (paciente.rg ?? '') | mask:'00.000.000-00' }}
+                </td>
+
+                <!-- CPF -->
+                <td class="px-4 py-4 text-sm text-gray-900">
+                  {{ (paciente.cpf ?? '') | mask:'000.000.000-00' }}
+                </td>
+
+                <!-- CNS -->
+                <td class="px-4 py-4 text-sm text-gray-900">
+                  {{ (paciente.cns ?? '') | mask:'000 0000 0000 0000' }}
+                </td>
+
+                <td class="px-4 py-4 text-sm text-gray-900">
+                  {{ (paciente.celular1 ?? '') | mask:'(00) 00000-0000' }}
+                </td>
+                
+                <!-- Endereço -->
+               
+
+                <!-- Ações -->
+                <td class="px-4 py-4 text-sm text-gray-900">
+                  <div class="flex space-x-2">
+                    <!-- Botão Visualizar -->
+                    <button
+                      type="button"
+                      (click)="visualizar(paciente.id!)"
+                      class="inline-flex items-center px-3 py-1 text-xs font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-1 transition-colors"
+                      title="Visualizar detalhes"
+                    >
+                      <!-- Ícone View -->
+                      <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                      </svg>
+                      Ver
+                    </button>
+
+                    <!-- Botão Editar -->
+                    <button
+                      type="button"
+                      (click)="preparaEditar(paciente.id!)"
+                      class="inline-flex items-center px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors"
+                      title="Editar paciente"
+                    >
+                      <!-- Ícone Edit -->
+                      <svg class="w-3 h-3 mr-1" fill="context-stroke" stroke="currentColor" viewBox="0 0 24 24" stroke-width="4.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                      </svg>
+                      Editar
+                    </button>
+
+                    <button
+                      type="button"
+                      (click)="abrirModalConsulta(paciente)"
+                      class="inline-flex items-center px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1 transition-colors"
+                      title="Adicionar consulta ou exame ao paciente"
+                    >
+                      <!-- Ícone Edit -->
+                      <svg xmlns="http://www.w3.org/2000/svg" width="14" viewBox="2 0 28 24" stroke-width="2.5">
+                        <g fill="none" stroke="currentColor"><path d="M3.5 11c0-1.9.001-3.274.142-4.322c.139-1.034.406-1.675.883-2.153c.478-.477 1.119-.744 2.153-.883C7.726 3.502 9.1 3.5 11 3.5h2c1.9 0 3.274.001 4.323.142c1.033.139 1.674.406 2.152.883c.477.478.744 1.119.883 2.153c.14 1.048.142 2.422.142 4.322v2c0 1.9-.001 3.274-.142 4.323c-.139 1.033-.406 1.674-.883 2.152c-.478.477-1.119.744-2.152.883c-1.049.14-2.423.142-4.323.142h-2c-1.9 0-3.274-.001-4.322-.142c-1.034-.139-1.675-.406-2.153-.883c-.477-.478-.744-1.119-.883-2.152C3.502 16.274 3.5 14.9 3.5 13z"/>
+                          <path stroke-linejoin="round" d="M12 8v8m4-4H8"/>
+                        </g>
+                      </svg>
+                      Consulta
+                    </button>
+
+                    <!-- Botão Deletar/Confirmar -->
+                    
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Mensagem quando não há dados -->
+              <tr *ngIf="listaPacientes.length === 0">
+                <td colspan="7" class="px-4 py-12 text-center text-gray-500">
+                  <div class="flex flex-col items-center">
+                    <svg class="w-16 h-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <p class="text-lg font-medium mb-2">Nenhum paciente encontrado</p>
+                    <p class="text-sm">Tente ajustar os filtros de busca ou cadastre um novo paciente</p>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginação (opcional) -->
+        <div *ngIf="listaPacientes.length > 0" class="mt-6 flex justify-between items-center">
+          <div class="text-sm text-gray-500">
+            Exibindo {{ listaPacientes.length }} registros
+          </div>
+          
+          <!-- Aqui pode adicionar controles de paginação se necessário -->
+          <div class="flex space-x-2">
+            <!-- Botões de paginação podem ser adicionados aqui -->
+          </div>
+        </div>
+      </div>
+      <!-- Modal de Edição -->
+      <app-paciente-edicao-modal 
+        *ngIf="pacienteEmEdicao" 
+        [paciente]="pacienteEmEdicao"
+        (fechar)="fecharModal()"
+        (salvar)="salvarPaciente($event)">
+      </app-paciente-edicao-modal>
+    </div>
+  </div>
+</div>
