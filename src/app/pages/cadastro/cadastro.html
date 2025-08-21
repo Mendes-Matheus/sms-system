@@ -1,0 +1,332 @@
+<div class="flex justify-center m-6">
+  <div class="w-full max-w-7xl">
+    <form #pacientesFrm="ngForm" (ngSubmit)="salvar()">
+      <!-- Card Principal -->
+      <div class="bg-white border border-gray-300 rounded-lg shadow-sm">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200">
+          <h2 class="text-xl font-semibold text-gray-900">Dados do Paciente</h2>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 space-y-6">
+          <!-- Nome -->
+          <!-- ####################################################################### -->
+          <!-- ####################################################################### -->
+          <!-- ####################################################################### -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label for="nome" class="block text-sm font-medium text-gray-700 mb-1">
+              Nome *
+            </label>
+            <input
+              id="nome"
+              type="text"
+              [(ngModel)]="paciente.nome"
+              required
+              minlength="3"
+              maxlength="100"
+              #nome="ngModel"
+              name="nome"
+              placeholder=""
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              [class.border-red-500]="nome.errors && nome.touched"
+              [class.focus:ring-red-500]="nome.errors && nome.touched"
+              [class.focus:border-red-500]="nome.errors && nome.touched"
+            />
+            <!-- Mensagens de Erro -->
+            <div *ngIf="nome.errors && nome.touched" class="mt-1 text-sm text-red-600">
+              <p *ngIf="nome.errors?.['required']">Informe o nome do(a) paciente.</p>
+              <p *ngIf="nome.errors?.['minlength']">Nome deve ter no mínimo 3 caracteres.</p>
+              <p *ngIf="nome.errors?.['maxlength']">Nome deve ter no máximo 100 caracteres.</p>
+            </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="dataNascimento" class="block text-sm font-medium text-gray-700 mb-1">
+                  Data de Nascimento *
+                </label>
+                <input
+                  id="dataNascimento"
+                  type="date"
+                  [(ngModel)]="paciente.dataNascimento"
+                  name="dataNascimento"
+                  required
+                  #dataNascimento="ngModel"
+                  [max]="maxDate"
+                  [min]="minDate"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  [class.border-red-500]="dataNascimento.errors && dataNascimento.touched"
+                  [class.focus:ring-red-500]="dataNascimento.errors && dataNascimento.touched"
+                  [class.focus:border-red-500]="dataNascimento.errors && dataNascimento.touched"
+                />
+                <!-- Mensagens de Erro -->
+                <div *ngIf="dataNascimento.errors && dataNascimento.touched" class="mt-1 text-sm text-red-600">
+                  <p *ngIf="dataNascimento.errors?.['required']">Informe a data de nascimento do(a) paciente.</p>
+                  <p *ngIf="dataNascimento.errors?.['min']">Data de nascimento inválida.</p>
+                </div>
+              </div>
+              <div>
+                <label for="sexo" class="block text-sm font-medium text-gray-700 mb-1">
+                  Sexo
+                </label>
+                <select
+                  id="sexo"
+                  [(ngModel)]="paciente.sexo"
+                  required
+                  name="sexo"
+                  #sexo="ngModel"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                >
+                  <option value="M">Masculino</option>
+                  <option value="F">Feminino</option>
+                  <option value="O">Outro</option>
+                </select>
+                <div>
+                  <!-- Mensagens de Erro -->
+                  <div *ngIf="sexo.errors && sexo.touched" class="mt-1 text-sm text-red-600">
+                    <p *ngIf="sexo.errors?.['required']">Informe o sexo do(a) paciente.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+          </div>
+          <!-- CPF, RG e CNS -->
+          <!-- ####################################################################### -->
+          <!-- ####################################################################### -->
+          <!-- ####################################################################### -->
+          <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <!-- CPF -->
+            <div>
+              <label for="cpf" class="block text-sm font-medium text-gray-700 mb-1">
+                CPF *
+              </label>
+              <input
+                id="cpf"
+                type="text"
+                name="cpf"
+                mask="000.000.000-00"
+                [(ngModel)]="paciente.cpf"
+                required
+                minlength="11"
+                maxlength="14"
+                #cpf="ngModel"
+                placeholder=""
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                [class.border-red-500]="cpf.errors && cpf.touched"
+                [class.focus:ring-red-500]="cpf.errors && cpf.touched"
+                [class.focus:border-red-500]="cpf.errors && cpf.touched"
+              />
+              <!-- Mensagens de Erro -->
+              <div *ngIf="cpf.errors && cpf.touched" class="mt-1 text-sm text-red-600">
+                <p *ngIf="cpf.errors?.['required']">Informe o CPF do(a) paciente.</p>
+                <p *ngIf="cpf.errors?.['minlength']">CPF incompleto.</p>
+              </div>
+            </div>
+
+            <!-- RG -->
+            <div>
+              <label for="rg" class="block text-sm font-medium text-gray-700 mb-1">
+                RG *
+              </label>
+              <input
+                id="rg"
+                type="text"
+                mask="00.000.000-00"
+                maxlength="13"
+                [(ngModel)]="paciente.rg"
+                required
+                name="rg"
+                #rg="ngModel"
+                placeholder=""
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+              <div>
+                <!-- Mensagens de Erro -->
+                <div *ngIf="rg.errors && rg.touched" class="mt-1 text-sm text-red-600">
+                  <p *ngIf="rg.errors?.['required']">Informe o RG do(a) paciente.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- CNS -->
+            <div>
+              <label for="cns" class="block text-sm font-medium text-gray-700 mb-1">
+                CNS (Cartão SUS) *
+              </label>
+              <input
+                id="cns"
+                type="text"
+                mask="000 0000 0000 0000"
+                maxlength="18"
+                [(ngModel)]="paciente.cns"
+                required
+                name="cns"
+                #cns="ngModel"
+                placeholder=""
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            <div>
+              <!-- Mensagens de Erro -->
+              <div *ngIf="cns.errors && cns.touched" class="mt-1 text-sm text-red-600">
+                <p *ngIf="cns.errors?.['required']">Informe o CNS do(a) paciente.</p>
+              </div>
+            </div>
+            </div>
+            <!-- Celular 1 -->
+            <div>
+              <label for="celular1" class="block text-sm font-medium text-gray-700 mb-1">
+                Celular Principal *
+              </label>
+              <input
+                id="celular1"
+                type="tel"
+                [(ngModel)]="paciente.celular1"
+                required
+                minlength="11"
+                maxlength="15"
+                name="celular1"
+                mask="(00) 00000-0000"
+                #celular1="ngModel"
+                placeholder=""
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+              <div>
+                <!-- Mensagens de Erro -->
+                <div *ngIf="celular1.errors && celular1.touched" class="mt-1 text-sm text-red-600">
+                  <p *ngIf="celular1.errors?.['required']">Informe o celular do(a) paciente.</p>
+                  <p *ngIf="celular1.errors?.['minlength']">O número do celular deve ter no mínimo 11 caracteres.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Celular 2 -->
+            <div>
+              <label for="celular2" class="block text-sm font-medium text-gray-700 mb-1">
+                Celular Secundário
+              </label>
+              <input
+                id="celular2"
+                type="tel"
+                [(ngModel)]="paciente.celular2"
+                name="celular2"
+                mask="(00) 00000-0000"
+                #celular2="ngModel"
+                placeholder=""
+                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+              />
+            </div>
+          </div>
+
+          <hr class="mt-8 border-gray-300" />
+          <!-- Endereço -->
+          <!-- ####################################################################### -->
+          <!-- ####################################################################### -->
+          <!-- ####################################################################### -->
+          <div>
+            <h3 class="text-lg font-medium text-gray-900 mb-3 mt-8">Endereço</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Endereço -->
+                <div>
+                  <label for="endereco" class="block text-sm font-medium text-gray-700 mb-1">
+                    Logradouro
+                  </label>
+                  <input
+                    id="endereco"
+                    type="text"
+                    [(ngModel)]="paciente.endereco"
+                    name="endereco"
+                    #endereco="ngModel"
+                    placeholder=""
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                  />
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  
+                  <div>
+                    <label for="bairro" class="block text-sm font-medium text-gray-700 mb-1">
+                      Bairro
+                    </label>
+                    <input
+                      id="bairro"
+                      type="text"
+                      [(ngModel)]="paciente.bairro"
+                      name="bairro"
+                      #bairro="ngModel"
+                      placeholder=""
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+                  <!-- Número -->
+                  <div>
+                    <label for="numero" class="block text-sm font-medium text-gray-700 mb-1">
+                      Número
+                    </label>
+                    <input
+                      id="numero"
+                      type="text"
+                      [(ngModel)]="paciente.numero"
+                      name="numero"
+                      #numero="ngModel"
+                      placeholder=""
+                      class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                    />
+                  </div>
+                </div>
+            </div>
+          </div>
+          <hr class="mt-8 border-gray-300" />
+          <!-- Observações -->
+          <div>
+            <h3 class="text-md font-medium text-gray-900">Observações</h3>
+            <label for="observacao" class="block text-sm font-medium text-gray-700 mb-1">
+            </label>
+            <textarea
+              id="observacao"
+              [(ngModel)]="paciente.observacao"
+              name="observacao"
+              #observacao="ngModel"
+              rows="4"
+              placeholder=""
+              class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors resize-vertical"
+            ></textarea>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+          <div class="flex gap-4">
+            <button
+              type="submit"
+              class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              [disabled]="pacientesFrm.invalid"
+            >
+              <!-- Ícone -->
+              <svg *ngIf="!atualizando" class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3-3m0 0l-3 3m3-3v12"></path>
+              </svg>
+              <svg *ngIf="atualizando" class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              {{ atualizando ? 'Atualizar' : 'Salvar' }}
+            </button>
+
+            <button
+              type="button"
+              (click)="limpar()"
+              class="inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-md shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+            >
+              <!-- Ícone -->
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z"></path>
+              </svg>
+              Limpar
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
