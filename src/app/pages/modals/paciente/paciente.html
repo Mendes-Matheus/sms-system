@@ -1,0 +1,293 @@
+<form
+  #f="ngForm"
+  (ngSubmit)="onSubmit(f)"
+  class="max-w-5xl mx-auto p-6 bg-white rounded-2xl shadow space-y-8"
+>
+  <!-- Título + ações -->
+  <div class="flex items-center justify-between">
+    <h2 class="text-2xl font-semibold">Cadastro de Paciente</h2>
+    <div class="flex gap-2">
+      <button
+        type="button"
+        class="px-4 py-2 rounded-xl border hover:bg-gray-50"
+        (click)="paciente = PacienteModel.newCliente()"
+        title="Gera um novo paciente com ID"
+      >
+        Novo
+      </button>
+      <button
+        type="submit"
+        class="px-4 py-2 rounded-xl bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
+        [disabled]="f.invalid"
+      >
+        Salvar
+      </button>
+    </div>
+  </div>
+
+  <!-- Dados principais -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-medium">Dados Principais</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- ID (somente leitura) -->
+      <div class="md:col-span-1">
+        <label class="block text-sm font-medium mb-1">ID</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2 bg-gray-50"
+          type="text"
+          name="id"
+          [(ngModel)]="paciente.id"
+          readonly
+        />
+      </div>
+
+      <!-- Nome -->
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium mb-1">Nome *</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="text"
+          name="nome"
+          [(ngModel)]="paciente.nome"
+          #nome="ngModel"
+          required
+          minlength="3"
+          maxlength="120"
+          placeholder="Nome completo"
+        />
+        <p
+          class="mt-1 text-sm text-red-600"
+          *ngIf="nome.invalid && (nome.dirty || nome.touched)"
+        >
+          {{ nome.errors?.['required'] ? 'Nome é obrigatório.' : '' }}
+          {{ nome.errors?.['minlength'] ? 'Mínimo de 3 caracteres.' : '' }}
+        </p>
+      </div>
+
+      <!-- CPF -->
+      <div>
+        <label class="block text-sm font-medium mb-1">CPF *</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="text"
+          name="cpf"
+          [(ngModel)]="paciente.cpf"
+          #cpf="ngModel"
+          required
+          placeholder="000.000.000-00"
+        />
+        <p
+          class="mt-1 text-sm text-red-600"
+          *ngIf="cpf.invalid && (cpf.dirty || cpf.touched)"
+        >
+          CPF é obrigatório.
+        </p>
+      </div>
+
+      <!-- RG -->
+      <div>
+        <label class="block text-sm font-medium mb-1">RG</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="text"
+          name="rg"
+          [(ngModel)]="paciente.rg"
+          placeholder="Documento de identidade"
+        />
+      </div>
+
+      <!-- CNS -->
+      <div>
+        <label class="block text-sm font-medium mb-1">CNS</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="text"
+          name="cns"
+          [(ngModel)]="paciente.cns"
+          placeholder="Cartão Nacional de Saúde"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Contato -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-medium">Contato</h3>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Celular 1 -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Celular 1 *</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="tel"
+          name="celular1"
+          [(ngModel)]="paciente.celular1"
+          #cel1="ngModel"
+          required
+          placeholder="(99) 99999-9999"
+        />
+        <p
+          class="mt-1 text-sm text-red-600"
+          *ngIf="cel1.invalid && (cel1.dirty || cel1.touched)"
+        >
+          Celular é obrigatório.
+        </p>
+      </div>
+
+      <!-- Celular 2 -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Celular 2</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="tel"
+          name="celular2"
+          [(ngModel)]="paciente.celular2"
+          placeholder="(99) 99999-9999"
+        />
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label class="block text-sm font-medium mb-1">E-mail</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="email"
+          name="email"
+          [(ngModel)]="paciente.email"
+          #email="ngModel"
+          placeholder="email@exemplo.com"
+        />
+        <p
+          class="mt-1 text-sm text-red-600"
+          *ngIf="email.invalid && (email.dirty || email.touched)"
+        >
+          Informe um e-mail válido.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dados demográficos -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-medium">Dados Demográficos</h3>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <!-- Sexo -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Sexo</label>
+        <select
+          class="w-full rounded-xl border px-3 py-2 bg-white"
+          name="sexo"
+          [(ngModel)]="paciente.sexo"
+        >
+          <option value="" selected>Selecione</option>
+          <option value="F">Feminino</option>
+          <option value="M">Masculino</option>
+          <option value="O">Outro</option>
+          <option value="N">Prefiro não informar</option>
+        </select>
+      </div>
+
+      <!-- Data Nascimento -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Data de Nascimento</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="date"
+          name="dataNascimento"
+          [(ngModel)]="paciente.dataNascimento"
+        />
+      </div>
+
+      <!-- Data Cadastro (readonly) -->
+      <div>
+        <label class="block text-sm font-medium mb-1">Data de Cadastro</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2 bg-gray-50"
+          type="date"
+          name="dataCadastro"
+          [(ngModel)]="paciente.dataCadastro"
+          readonly
+        />
+      </div>
+
+      <!-- Última Consulta -->
+      <div>
+        <label class="block text-sm font-medium mb-1"
+          >Data da Última Consulta</label
+        >
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="date"
+          name="dataUltimaConsulta"
+          [(ngModel)]="paciente.dataUltimaConsulta"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Endereço -->
+  <section class="space-y-4">
+    <h3 class="text-lg font-medium">Endereço</h3>
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+      <div class="md:col-span-4">
+        <label class="block text-sm font-medium mb-1">Endereço</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="text"
+          name="endereco"
+          [(ngModel)]="paciente.endereco"
+          placeholder="Rua/Av., complemento"
+        />
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-medium mb-1">Número</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="text"
+          name="numero"
+          [(ngModel)]="paciente.numero"
+          placeholder="Nº"
+        />
+      </div>
+      <div class="md:col-span-3">
+        <label class="block text-sm font-medium mb-1">Bairro</label>
+        <input
+          class="w-full rounded-xl border px-3 py-2"
+          type="text"
+          name="bairro"
+          [(ngModel)]="paciente.bairro"
+          placeholder="Bairro"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Observação -->
+  <section class="space-y-2">
+    <h3 class="text-lg font-medium">Observação</h3>
+    <textarea
+      class="w-full rounded-xl border px-3 py-2 min-h-[120px]"
+      name="observacao"
+      [(ngModel)]="paciente.observacao"
+      placeholder="Anotações gerais, alergias, restrições etc."
+    ></textarea>
+  </section>
+
+  <!-- Rodapé de ações -->
+  <div class="flex justify-end gap-2 pt-2">
+    <button
+      type="button"
+      class="px-4 py-2 rounded-xl border hover:bg-gray-50"
+      (click)="onCancelar()"
+    >
+      Cancelar
+    </button>
+    <button
+      type="submit"
+      class="px-4 py-2 rounded-xl bg-teal-600 text-white hover:bg-teal-700 disabled:opacity-50"
+      [disabled]="f.invalid"
+    >
+      Salvar
+    </button>
+  </div>
+</form>
