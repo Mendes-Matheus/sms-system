@@ -37,6 +37,7 @@ export class ConsultaModel {
     dataAgendamento?: Date;
     estabelecimento?: Estabelecimento;
     observacao?: string;
+    motivo?: string;
     ativo?: boolean = true
     deletando: boolean = false;
 
