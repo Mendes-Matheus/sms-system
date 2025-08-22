@@ -38,6 +38,8 @@ export class Consultas implements OnInit {
   modalAberto = false;
   consultaEditada: ConsultaModel = ConsultaModel.newConsultaModel();
   consultaOriginal: ConsultaModel | null = null;
+  mostrarCampoData = false;
+  dataMinima: Date = new Date(); // Data mínima para agendamento (hoje)
 
   // Opções para os selects
   statusOptions = Object.values(StatusConsulta);
@@ -80,13 +82,35 @@ export class Consultas implements OnInit {
     this.consultaOriginal = consulta;
     // Criar uma cópia para edição
     this.consultaEditada = {...consulta};
+    
+    // Verificar se deve mostrar o campo de data
+    this.mostrarCampoData = this.consultaEditada.status === StatusConsulta.AGENDADA || 
+                           this.consultaEditada.status === StatusConsulta.REAGENDADA;
+    
     this.modalAberto = true;
+  }
+
+  onStatusChange(): void {
+    // Mostrar campo de data apenas para status Agendada ou Reagendada
+    this.mostrarCampoData = this.consultaEditada.status === StatusConsulta.AGENDADA || 
+                           this.consultaEditada.status === StatusConsulta.REAGENDADA;
+    
+    // Se o status não for Agendada/Reagendada, limpar a data de agendamento
+    if (!this.mostrarCampoData) {
+      this.consultaEditada.dataAgendamento = undefined;
+    } else if (!this.consultaEditada.dataAgendamento) {
+      // Se for Agendada/Reagendada e não tiver data, definir uma data padrão (amanhã)
+      const amanha = new Date();
+      amanha.setDate(amanha.getDate() + 1);
+      this.consultaEditada.dataAgendamento = amanha;
+    }
   }
 
   fecharModal(): void {
     this.modalAberto = false;
     this.consultaOriginal = null;
     this.consultaEditada = ConsultaModel.newConsultaModel();
+    this.mostrarCampoData = false;
   }
 
   salvarEdicao(): void {
@@ -95,6 +119,16 @@ export class Consultas implements OnInit {
       this.consultaOriginal.status = this.consultaEditada.status;
       this.consultaOriginal.tipoConsulta = this.consultaEditada.tipoConsulta;
       this.consultaOriginal.estabelecimento = this.consultaEditada.estabelecimento;
+      this.consultaOriginal.dataAgendamento = this.consultaEditada.dataAgendamento;
+      
+      // Se o status foi alterado para Agendada/Reagendada sem data, definir data padrão
+      if ((this.consultaOriginal.status === StatusConsulta.AGENDADA || 
+           this.consultaOriginal.status === StatusConsulta.REAGENDADA) &&
+          !this.consultaOriginal.dataAgendamento) {
+        const amanha = new Date();
+        amanha.setDate(amanha.getDate() + 1);
+        this.consultaOriginal.dataAgendamento = amanha;
+      }
       
       // Salvar no serviço
       this.consultaService.atualizarConsulta(this.consultaOriginal);
