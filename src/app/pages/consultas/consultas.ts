@@ -99,7 +99,9 @@ export class Consultas implements OnInit {
   onStatusChange(): void {
     // Mostrar campo de data apenas para status Agendada ou Reagendada
     this.mostrarCampoData = this.consultaEditada.status === StatusConsulta.AGENDADA || 
-                           this.consultaEditada.status === StatusConsulta.REAGENDADA;
+                           this.consultaEditada.status === StatusConsulta.REAGENDADA ||
+                           this.consultaEditada.status === StatusConsulta.REALIZADA ||
+                           this.consultaEditada.status === StatusConsulta.CANCELADA;
     
     // Mostrar campo de observação apenas para status Cancelada
     this.mostrarCampoObservacao = this.consultaEditada.status === StatusConsulta.CANCELADA;

@@ -15,11 +15,11 @@ enum TipoConsulta {
 enum StatusConsulta {
     PENDENTE = 'Pendente',
     AGENDADA = 'Agendada',
-    CONFIRMADA = 'Confirmada',
-    CANCELADA = 'Cancelada',
+    REAGENDADA = 'Reagendada',
     REALIZADA = 'Realizada',
-    NAO_COMPARECEU = 'Não Compareceu',
-    REAGENDADA = 'Reagendada'
+    CANCELADA = 'Cancelada',
+    NAO_COMPARECEU = 'Não Compareceu'
+    
 }
 
 enum Estabelecimento {

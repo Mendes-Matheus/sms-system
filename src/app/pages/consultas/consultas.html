@@ -1,9 +1,9 @@
 <div class="flex justify-center my-6">
-  <div class="w-full max-w-7xl">
+  <div class="w-full max-w-7xl min-w-7xl">
     <!-- Card de Resultado -->
     <div class="bg-white border border-gray-300 rounded-lg shadow-sm">
       <!-- Header -->
-      <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <div class="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
         <h1 class="text-xl font-bold text-gray-900">Consultas</h1>
         <span class="text-sm text-gray-500">
           {{ consultasVM.length }} consulta(s) encontrada(s)
@@ -19,11 +19,10 @@
             <thead>
               <tr class="border-b border-gray-200 bg-gray-50">
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CPF</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNS</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Solicitação</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agendamento</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da COnsulta</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estab.</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
@@ -36,11 +35,6 @@
                 <!-- Nome -->
                 <td class="px-4 py-4 text-sm text-gray-900">
                   {{ item.nome }}
-                </td>
-
-                <!-- CPF -->
-                <td class="px-4 py-4 text-sm text-gray-900">
-                  {{ (item.cpf ?? '') | mask:'000.000.000-00' }}
                 </td>
 
                 <!-- CNS -->
@@ -69,10 +63,11 @@
                 <td class="px-4 py-4 text-sm text-gray-900">
                   <span [ngClass]="{
                     'bg-yellow-100 text-yellow-800': item.consulta.status === StatusConsulta.PENDENTE,
-                    'bg-green-100 text-green-800': item.consulta.status === StatusConsulta.AGENDADA,
+                    'bg-green-200 text-green-800': item.consulta.status === StatusConsulta.AGENDADA,
                     'bg-blue-100 text-blue-800': item.consulta.status === StatusConsulta.REALIZADA,
                     'bg-red-100 text-red-800': item.consulta.status === StatusConsulta.CANCELADA,
                     'bg-purple-100 text-purple-800': item.consulta.status === StatusConsulta.REAGENDADA,
+                    'bg-green-100 text-green-800': item.consulta.status === StatusConsulta.NAO_COMPARECEU,
                     'px-2 py-1 rounded-full text-xs font-medium': true
                   }">
                     {{ item.consulta.status }}
@@ -88,7 +83,7 @@
                 <td class="px-4 py-4 text-sm text-gray-900">
                   <div class="flex space-x-2">
                     <!-- Botão Visualizar -->
-                    <button (click)="visualizarConsulta(item.consulta)" class="p-1 text-blue-600 hover:text-blue-800 transition-colors" title="Visualizar">
+                    <button (click)="visualizarConsulta(item.consulta)" class="py-1 px-2 text-blue-600 hover:text-blue-800 transition-colors" title="Visualizar">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -96,18 +91,12 @@
                     </button>
                     
                     <!-- Botão Editar -->
-                    <button (click)="abrirModalEdicao(item)" class="p-1 text-green-600 hover:text-green-800 transition-colors" title="Editar">
+                    <button (click)="abrirModalEdicao(item)" class="py-1 px-2 text-green-600 hover:text-green-800 transition-colors" title="Editar">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                       </svg>
                     </button>
                     
-                    <!-- Botão Deletar -->
-                    <button (click)="deletarConsulta(item.consulta)" class="p-1 text-red-600 hover:text-red-800 transition-colors" title="Deletar">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                      </svg>
-                    </button>
                   </div>
                 </td>
               </tr>
@@ -187,6 +176,10 @@
               <p class="text-xs text-gray-500">Estabelecimento</p>
               <p class="text-sm font-medium">{{ consultaEditada.estabelecimento }}</p>
             </div>
+            <div *ngIf="mostrarCampoData">
+              <p class="text-xs text-gray-500">Data da Consulta</p>
+              <p class="text-sm font-medium">{{ consultaEditada.dataAgendamento  | date:'dd/MM/yyyy' }}</p>
+            </div>
           </div>
         </div>
         
@@ -202,10 +195,13 @@
         
         <!-- Data de Agendamento (condicional) -->
         <div class="mb-4" *ngIf="mostrarCampoData">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Data de Agendamento *</label>
-          <input type="date" [(ngModel)]="consultaEditada.dataAgendamento" [ngModelOptions]="{standalone: true}"
-                 [min]="dataMinima | date:'yyyy-MM-dd'"
-                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Data da Consulta *</label>
+          <input 
+            type="date" 
+            [(ngModel)]="consultaEditada.dataAgendamento" 
+            [ngModelOptions]="{standalone: true}"
+            [min]="dataMinima | date:'yyyy-MM-dd'"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
         </div>
         
         <!-- Observação (condicional para status Cancelada) -->
