@@ -1,13 +1,15 @@
-import { Component, NgModule, OnInit } from '@angular/core';
-import { ConsultaModel, Estabelecimento, TipoConsulta, StatusConsulta } from './consulta.model';
+import { Component, OnInit } from '@angular/core';
+import { ConsultaModel, Estabelecimento, TipoConsulta, StatusConsulta } from '../../core/models/consulta.model';
 import { ConsultaService } from '../../core/services/consulta.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NgbCalendar } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule, NgForm } from '@angular/forms';
+import { NgForm } from '@angular/forms';
 import { PacienteService } from '../../core/services/paciente.service';
 import { PacienteModel } from '../modals/paciente/paciente.model';
 import { CommonModule } from '@angular/common';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+import { EditarConsultaModal } from '../editar-consulta-modal/editar-consulta-modal';
+import { VisualizarConsultaModal } from "../visualizar-consulta-modal/visualizar-consulta-modal";
 
 interface ConsultaView {
   nome: string;
@@ -21,8 +23,9 @@ interface ConsultaView {
   imports: [
     CommonModule,
     NgxMaskPipe,
-    FormsModule
-  ],
+    EditarConsultaModal,
+    VisualizarConsultaModal
+],
   templateUrl: './consultas.html',
   styleUrl: './consultas.scss',
   providers: [provideNgxMask()]
@@ -37,16 +40,22 @@ export class Consultas implements OnInit {
   // Propriedades para o modal de edição
   modalAberto = false;
   consultaEditada: ConsultaModel = ConsultaModel.newConsultaModel();
+  visualizaConsulta: ConsultaModel = ConsultaModel.newConsultaModel();
   consultaOriginal: ConsultaModel | null = null;
   pacienteSelecionado: PacienteModel | null = null;
-  mostrarCampoData = false;
-  mostrarCampoObservacao = false;
-  dataMinima: Date = new Date(); // Data mínima para agendamento (hoje)
 
   // Opções para os selects
   statusOptions = Object.values(StatusConsulta);
 
+    // Propriedades para os modais
+  modalVisualizacaoAberto = false;
+  modalEdicaoAberto = false;
+  consultaSelecionada: ConsultaModel = {} as ConsultaModel;
+
+  // Opções para os selects
+
   consulta: ConsultaModel = ConsultaModel.newConsultaModel();
+
 
   constructor(
     private consultaService: ConsultaService,
@@ -73,9 +82,10 @@ export class Consultas implements OnInit {
     });
   }
 
-  visualizarConsulta(consulta: ConsultaModel): void {
-    // Navegar para a página de detalhes da consulta
-    this.router.navigate(['/consultas/detalhes', consulta.id]);
+  visualizarConsulta(item: ConsultaView): void {
+    this.consultaSelecionada = item.consulta;
+    this.pacienteSelecionado = this.pacienteService.buscarPacientePorId(item.consulta.pacienteId!) || null;
+    this.modalVisualizacaoAberto = true;
   }
 
   abrirModalEdicao(item: ConsultaView): void {
@@ -85,63 +95,9 @@ export class Consultas implements OnInit {
     this.pacienteSelecionado = this.pacienteService.buscarPacientePorId(item.consulta.pacienteId!) || null;
     
     // Criar uma cópia para edição
-    this.consultaEditada = {...item.consulta};
-    
-    // Verificar se deve mostrar os campos condicionais
-    this.mostrarCampoData = this.consultaEditada.status === StatusConsulta.AGENDADA || 
-                           this.consultaEditada.status === StatusConsulta.REAGENDADA;
-    
-    this.mostrarCampoObservacao = this.consultaEditada.status === StatusConsulta.CANCELADA;
+    this.visualizaConsulta = {...item.consulta};
     
     this.modalAberto = true;
-  }
-
-  onStatusChange(): void {
-    // Mostrar campo de data apenas para status Agendada ou Reagendada
-    this.mostrarCampoData = this.consultaEditada.status === StatusConsulta.AGENDADA || 
-                           this.consultaEditada.status === StatusConsulta.REAGENDADA ||
-                           this.consultaEditada.status === StatusConsulta.REALIZADA ||
-                           this.consultaEditada.status === StatusConsulta.CANCELADA;
-    
-    // Mostrar campo de observação apenas para status Cancelada
-    this.mostrarCampoObservacao = this.consultaEditada.status === StatusConsulta.CANCELADA;
-    
-    // Se o status não for Agendada/Reagendada, limpar a data de agendamento
-    if (!this.mostrarCampoData) {
-      this.consultaEditada.dataAgendamento = undefined;
-    } else if (!this.consultaEditada.dataAgendamento) {
-      // Se for Agendada/Reagendada e não tiver data, definir uma data padrão (amanhã)
-      const amanha = new Date();
-      amanha.setDate(amanha.getDate() + 1);
-      this.consultaEditada.dataAgendamento = amanha;
-    }
-    
-    // Se o status não for Cancelada, limpar a observação
-    if (!this.mostrarCampoObservacao) {
-      this.consultaEditada.observacao = '';
-    }
-  }
-
-  formularioValido(): boolean {
-    // Validação básica do formulário
-    if (!this.consultaEditada.status) {
-      return false;
-    }
-    
-    // Se for Agendada/Reagendada, a data é obrigatória
-    if ((this.consultaEditada.status === StatusConsulta.AGENDADA || 
-         this.consultaEditada.status === StatusConsulta.REAGENDADA) &&
-        !this.consultaEditada.dataAgendamento) {
-      return false;
-    }
-    
-    // Se for Cancelada, a observação é obrigatória
-    if (this.consultaEditada.status === StatusConsulta.CANCELADA && 
-        (!this.consultaEditada.observacao || this.consultaEditada.observacao.trim() === '')) {
-      return false;
-    }
-    
-    return true;
   }
 
   fecharModal(): void {
@@ -149,25 +105,14 @@ export class Consultas implements OnInit {
     this.consultaOriginal = null;
     this.pacienteSelecionado = null;
     this.consultaEditada = ConsultaModel.newConsultaModel();
-    this.mostrarCampoData = false;
-    this.mostrarCampoObservacao = false;
   }
 
-  salvarEdicao(): void {
-    if (this.consultaOriginal && this.formularioValido()) {
+  salvarEdicao(consultaAtualizada: ConsultaModel): void {
+    if (this.consultaOriginal) {
       // Atualizar apenas os campos editáveis
-      this.consultaOriginal.status = this.consultaEditada.status;
-      this.consultaOriginal.dataAgendamento = this.consultaEditada.dataAgendamento;
-      this.consultaOriginal.observacao = this.consultaEditada.observacao;
-      
-      // Se o status foi alterado para Agendada/Reagendada sem data, definir data padrão
-      if ((this.consultaOriginal.status === StatusConsulta.AGENDADA || 
-           this.consultaOriginal.status === StatusConsulta.REAGENDADA) &&
-          !this.consultaOriginal.dataAgendamento) {
-        const amanha = new Date();
-        amanha.setDate(amanha.getDate() + 1);
-        this.consultaOriginal.dataAgendamento = amanha;
-      }
+      this.consultaOriginal.status = consultaAtualizada.status;
+      this.consultaOriginal.dataAgendamento = consultaAtualizada.dataAgendamento;
+      this.consultaOriginal.observacao = consultaAtualizada.observacao;
       
       // Salvar no serviço
       this.consultaService.atualizarConsulta(this.consultaOriginal);
@@ -187,10 +132,27 @@ export class Consultas implements OnInit {
     }
   }
 
+  abrirModalEdicaoFromVisualizacao(consulta: ConsultaModel): void {
+    this.fecharModalVisualizacao();
+    
+    // Encontrar o item completo para abrir o modal de edição
+    const consultaView = this.consultasVM.find(vm => vm.consulta.id === consulta.id);
+    if (consultaView) {
+      this.abrirModalEdicao(consultaView);
+    }
+  }
+
+  fecharModalVisualizacao(): void {
+    this.modalVisualizacaoAberto = false;
+    this.consultaSelecionada = {} as ConsultaModel;
+    this.pacienteSelecionado = null;
+  }
+
+
   onSubmitConsulta(form: NgForm) {
     if (form.valid) {
       const novaConsulta = ConsultaModel.newConsultaModel();
-      novaConsulta.pacienteId = this.consulta.pacienteId; // paciente previamente selecionado
+      novaConsulta.pacienteId = this.consulta.pacienteId;
       novaConsulta.tipoConsulta = form.value.tipoConsulta;
       novaConsulta.status = StatusConsulta.PENDENTE;
       novaConsulta.dataSolicitacao = new Date();

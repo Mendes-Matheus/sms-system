@@ -20,7 +20,7 @@
               <tr class="border-b border-gray-200 bg-gray-50">
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNS</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Especilidade</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Solicitação</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da COnsulta</th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
@@ -83,7 +83,7 @@
                 <td class="px-4 py-4 text-sm text-gray-900">
                   <div class="flex space-x-2">
                     <!-- Botão Visualizar -->
-                    <button (click)="visualizarConsulta(item.consulta)" class="py-1 px-2 text-blue-600 hover:text-blue-800 transition-colors" title="Visualizar">
+                    <button (click)="visualizarConsulta(item)" class="py-1 px-2 text-blue-600 hover:text-blue-800 transition-colors" title="Visualizar">
                       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -133,99 +133,21 @@
   </div>
 </div>
 
-<!-- Modal de Edição -->
-<div *ngIf="modalAberto" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
-  <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
-    <!-- Header do Modal -->
-    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-      <h2 class="text-lg font-bold text-gray-900">Editar Consulta</h2>
-      <button (click)="fecharModal()" class="text-gray-400 hover:text-gray-600">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
-    </div>
-    
-    <!-- Corpo do Modal -->
-    <div class="px-6 py-4">
-      <form (ngSubmit)="salvarEdicao()">
-        <!-- Informações do Paciente (somente leitura) -->
-        <div class="mb-4 p-3 bg-gray-50 rounded-md">
-          <h3 class="text-sm font-medium text-gray-700 mb-2">Informações do Paciente</h3>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <p class="text-xs text-gray-500">Nome</p>
-              <p class="text-sm font-medium">{{ pacienteSelecionado?.nome || '–––' }}</p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">CNS</p>
-              <p class="text-sm font-medium">{{ (pacienteSelecionado?.cns ?? '') | mask:'000 0000 0000 0000' }}</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Informações da Consulta (somente leitura) -->
-        <div class="mb-4 p-3 bg-gray-50 rounded-md">
-          <h3 class="text-sm font-medium text-gray-700 mb-2">Informações da Consulta</h3>
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <p class="text-xs text-gray-500">Tipo de Consulta</p>
-              <p class="text-sm font-medium">{{ consultaEditada.tipoConsulta }}</p>
-            </div>
-            <div>
-              <p class="text-xs text-gray-500">Estabelecimento</p>
-              <p class="text-sm font-medium">{{ consultaEditada.estabelecimento }}</p>
-            </div>
-            <div *ngIf="mostrarCampoData">
-              <p class="text-xs text-gray-500">Data da Consulta</p>
-              <p class="text-sm font-medium">{{ consultaEditada.dataAgendamento  | date:'dd/MM/yyyy' }}</p>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Status (editável) -->
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
-          <select [(ngModel)]="consultaEditada.status" [ngModelOptions]="{standalone: true}" 
-                  (change)="onStatusChange()"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
-          </select>
-        </div>
-        
-        <!-- Data de Agendamento (condicional) -->
-        <div class="mb-4" *ngIf="mostrarCampoData">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Data da Consulta *</label>
-          <input 
-            type="date" 
-            [(ngModel)]="consultaEditada.dataAgendamento" 
-            [ngModelOptions]="{standalone: true}"
-            [min]="dataMinima | date:'yyyy-MM-dd'"
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-        
-        <!-- Observação (condicional para status Cancelada) -->
-        <div class="mb-4" *ngIf="mostrarCampoObservacao">
-          <label class="block text-sm font-medium text-gray-700 mb-1">Motivo do Cancelamento *</label>
-          <textarea [(ngModel)]="consultaEditada.observacao" [ngModelOptions]="{standalone: true}"
-                    rows="3"
-                    placeholder="Informe o motivo do cancelamento"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-        </div>
-        
-        <!-- Rodapé do Modal -->
-        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-          <button type="button" (click)="fecharModal()" 
-                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
-            Cancelar
-          </button>
-          <button type="submit" 
-                  class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
-                  [disabled]="!formularioValido()">
-            Salvar
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+<!-- Modal de Visualização de Consulta -->
+<app-visualizar-consulta-modal
+  *ngIf="modalVisualizacaoAberto"
+  [consulta]="consultaSelecionada"
+  [paciente]="pacienteSelecionado"
+  (fechar)="fecharModalVisualizacao()"
+  (editar)="abrirModalEdicaoFromVisualizacao($event)">
+</app-visualizar-consulta-modal>
+
+<!-- Modal de Edição de Consulta -->
+<app-editar-consulta-modal
+  *ngIf="modalAberto"
+  [paciente]="pacienteSelecionado"
+  [consulta]="visualizaConsulta"
+  [statusOptions]="statusOptions"
+  (salvar)="salvarEdicao($event)"
+  (fechar)="fecharModal()">
+</app-editar-consulta-modal>

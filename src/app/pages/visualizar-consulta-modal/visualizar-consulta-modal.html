@@ -1,0 +1,107 @@
+<div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <!-- Header do Modal -->
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center sticky top-0 bg-white">
+      <h2 class="text-lg font-bold text-gray-900">Detalhes da Consulta</h2>
+      <button (click)="fecharModal()" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Corpo do Modal -->
+    <div class="px-6 py-4">
+      <!-- Informações do Paciente -->
+      <div class="mb-4 p-3 bg-gray-100 rounded-md">
+        <h3 class="text-md font-semibold text-gray-800 mb-3 pb-2">Informações do Paciente</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-xs text-gray-500">Nome Completo</p>
+            <p class="text-sm font-medium">{{ paciente?.nome || 'Não informado' }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500">CPF</p>
+            <p class="text-sm font-medium">{{ (paciente?.cpf ?? '') | mask: '000.000.000-00'  }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500">CNS</p>
+            <p class="text-sm font-medium">{{ (paciente?.cns ?? '') | mask: '000 0000 0000 0000'  }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500">Data de Nascimento</p>
+            <p class="text-sm font-medium">{{ paciente?.dataNascimento | date: 'dd/MM/yyyy' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Informações da Consulta -->
+      <div class="mb-4 p-3 bg-gray-100 rounded-md">
+        <h3 class="text-md font-semibold text-gray-800 mb-3  pb-2">Informações da Consulta</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p class="text-xs text-gray-500">Tipo de Consulta</p>
+            <p class="text-sm font-medium">{{ consulta.tipoConsulta || 'Não informado' }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500">Estabelecimento</p>
+            <p class="text-sm font-medium">{{ consulta.estabelecimento || 'Não informado' }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500">Status</p>
+            <p class="text-sm font-medium">{{ consulta.status || 'Não informado' }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-500">Data de Solicitação</p>
+            <p class="text-sm font-medium">{{ consulta.dataSolicitacao | date: 'dd/MM/yyyy' }}</p>
+          </div>
+          <div *ngIf="consulta.dataAgendamento">
+            <p class="text-xs text-gray-500">Data da Consulta</p>
+            <p class="text-sm font-medium">{{ consulta.dataAgendamento | date: 'dd/MM/yyyy' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observações -->
+      <div class="mb-4 p-3 bg-gray-100 rounded-md" *ngIf="consulta.observacao">
+        <h3 class="text-md font-semibold text-gray-800 mb-3 pb-2">Observações</h3>
+        <p class="text-sm text-gray-700 p-3">{{ consulta.observacao }}</p>
+      </div>
+
+      <!-- Histórico de Alterações -->
+      <!-- <div class="mb-4" *ngIf="consulta.historico && consulta.historico.length > 0">
+        <h3 class="text-md font-semibold text-gray-800 mb-3 border-b pb-2">Histórico de Alterações</h3>
+        <div class="space-y-2">
+          <div *ngFor="let registro of consulta.historico" class="text-sm bg-gray-50 p-2 rounded-md">
+            <p class="font-medium">{{ registro.data | date:'dd/MM/yyyy HH:mm' }} - {{ registro.acao }}</p>
+            <p class="text-gray-600" *ngIf="registro.detalhes">{{ registro.detalhes }}</p>
+            <p class="text-xs text-gray-500">Por: {{ registro.usuario || 'Sistema' }}</p>
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Mensagem quando não há informações adicionais -->
+      <!-- <div *ngIf="!consulta.observacao && (!consulta.historico || consulta.historico.length === 0)" 
+           class="text-center py-4 text-gray-500">
+        <svg class="w-12 h-12 mx-auto mb-2 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <p>Nenhuma informação adicional disponível</p>
+      </div>
+    </div> -->
+    
+    <!-- Rodapé do Modal -->
+    <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 sticky bottom-0">
+      <div class="flex justify-end space-x-3">
+        <button type="button" (click)="fecharModal()" 
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-md transition-colors">
+          Fechar
+        </button>
+        <button type="button" (click)="editarConsulta()" 
+                class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors">
+          Editar Consulta
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

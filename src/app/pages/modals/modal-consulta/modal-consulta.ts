@@ -4,7 +4,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { PacienteModel } from '../paciente/paciente.model';
-import { ConsultaModel, StatusConsulta, TipoConsulta, Estabelecimento } from '../../consultas/consulta.model';
+import { ConsultaModel, StatusConsulta, TipoConsulta, Estabelecimento } from '../../../core/models/consulta.model';
 
 @Component({
   selector: 'app-modal-consulta',

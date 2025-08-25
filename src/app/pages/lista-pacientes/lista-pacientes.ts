@@ -10,7 +10,7 @@ import { RouterModule } from '@angular/router';
 import { PacienteModel } from '../modals/paciente/paciente.model';
 import { PacienteService } from '../../core/services/paciente.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { ConsultaModel } from '../consultas/consulta.model';
+import { ConsultaModel } from '../../core/models/consulta.model';
 import { trigger, transition, style, animate } from '@angular/animations';
 import { ModalConsulta } from '../modals/modal-consulta/modal-consulta';
 import { ConsultaService } from '../../core/services/consulta.service';

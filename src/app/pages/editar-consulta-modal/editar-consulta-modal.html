@@ -1,0 +1,101 @@
+<div class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+    <!-- Header do Modal -->
+    <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+      <h2 class="text-lg font-bold text-gray-900">Editar Consulta</h2>
+      <button (click)="fecharModal()" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Corpo do Modal -->
+    <div class="px-6 py-4">
+      <form (ngSubmit)="salvarEdicao()">
+        <!-- Informações do Paciente (somente leitura) -->
+        <div class="mb-4 p-3 bg-gray-100 rounded-md">
+          <h3 class="text-sm font-medium text-gray-700 mb-2">Informações do Paciente</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <p class="text-xs text-gray-500">Nome</p>
+              <p class="text-sm font-medium">{{ paciente?.nome || '–––' }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">CNS</p>
+              <p class="text-sm font-medium">{{ (paciente?.cns ?? '') | mask:'000 0000 0000 0000' }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Informações da Consulta (somente leitura) -->
+        <div class="mb-4 p-3 bg-gray-100 rounded-md">
+          <h3 class="text-sm font-medium text-gray-700 mb-2">Informações da Consulta</h3>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <p class="text-xs text-gray-500">Especilidade</p>
+              <p class="text-sm font-medium">{{ consulta.tipoConsulta }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500">Estabelecimento</p>
+              <p class="text-sm font-medium">{{ consulta.estabelecimento }}</p>
+            </div>
+            <div *ngIf="mostrarCampoData">
+              <p class="text-xs text-gray-500">Data da Consulta</p>
+              <p class="text-sm font-medium">{{ consulta.dataAgendamento | date :'dd/MM/yyyy' }}</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Status (editável) -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Status *</label>
+          <select [(ngModel)]="consulta.status" [ngModelOptions]="{standalone: true}" 
+                  (change)="onStatusChange()"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+          </select>
+        </div>
+        
+        <!-- Data de Agendamento (condicional) -->
+        <div class="mb-4" *ngIf="mostrarCampoData">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Data de Agendamento *</label>
+          <input 
+            type="date" 
+            [(ngModel)]="consulta.dataAgendamento" 
+            [ngModelOptions]="{standalone: true}"
+            [min]="dataMinima | date:'yyyy-MM-dd'"
+            (change)="validarDataAgendamento()"
+            [class.border-red-500]="dataInvalida"
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+          
+          <p *ngIf="dataInvalida" class="mt-1 text-sm text-red-600">
+            A data deve ser a partir de {{ dataMinima | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+        
+        <!-- Observação (condicional para status Cancelada) -->
+        <div class="mb-4" *ngIf="mostrarCampoObservacao">
+          <label class="block text-sm font-medium text-gray-700 mb-1">Motivo do Cancelamento *</label>
+          <textarea [(ngModel)]="consulta.observacao" [ngModelOptions]="{standalone: true}"
+                    rows="3"
+                    placeholder="Informe o motivo do cancelamento"
+                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+        
+        <!-- Rodapé do Modal -->
+        <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
+          <button type="button" (click)="fecharModal()" 
+                  class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+            Cancelar
+          </button>
+          <button type="submit" 
+                  class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                  [disabled]="!formularioValido()">
+            Salvar
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

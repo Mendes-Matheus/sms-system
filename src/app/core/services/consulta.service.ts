@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ConsultaModel } from '../../pages/consultas/consulta.model';
+import { ConsultaModel } from '../../core/models/consulta.model';
 
 @Injectable({
   providedIn: 'root'
