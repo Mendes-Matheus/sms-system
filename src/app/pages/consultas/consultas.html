@@ -10,21 +10,148 @@
         </span>
       </div>
 
+      
+
       <!-- Content -->
       <div class="p-6">
         <!-- Tabela Responsiva -->
         <div class="overflow-x-auto">
+          <!-- ------------------------------------------------------------ -->
+          <!------------------------ Controles de Busca e Filtros --------------->
+          <!-- ------------------------------------------------------------ -->
+          <div class="p-4 bg-gray-50 border-b border-gray-200">
+            <!-- Busca -->
+            <div class="mb-4">
+              <label for="busca" class="block text-sm font-medium text-gray-700 mb-1">Buscar por nome, CNS, status, especialidade ou estabelecimento</label>
+              <div class="flex">
+                <input 
+                  type="text" 
+                  id="busca" 
+                  [(ngModel)]="termoBusca" 
+                  (input)="onBuscar()"
+                  class="flex-1 px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                <button 
+                  (click)="onBuscar()"
+                  class="px-4 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-700"
+                >
+                  Buscar
+                </button>
+              </div>
+            </div>
+
+            <!-- Filtros -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+              <!-- Especialidade -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Especialidade</label>
+                <select 
+                  [(ngModel)]="filtros.especialidade" 
+                  (change)="aplicarFiltros()"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Todas</option>
+                  <option *ngFor="let tipo of tiposConsulta" [value]="tipo">{{tipo}}</option>
+                </select>
+              </div>
+
+              <!-- Status -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <select 
+                  [(ngModel)]="filtros.status" 
+                  (change)="aplicarFiltros()"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Todos</option>
+                  <option *ngFor="let status of statusConsulta" [value]="status">{{status}}</option>
+                </select>
+              </div>
+
+              <!-- Estabelecimento -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Estabelecimento</label>
+                <select 
+                  [(ngModel)]="filtros.estabelecimento" 
+                  (change)="aplicarFiltros()"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Todos</option>
+                  <option *ngFor="let estab of estabelecimentos" [value]="estab">{{estab}}</option>
+                </select>
+              </div>
+
+              <!-- Data Solicitação -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Data Solicitação</label>
+                <input 
+                  type="date" 
+                  [(ngModel)]="filtros.dataSolicitacao" 
+                  (change)="aplicarFiltros()"
+                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+              </div>
+            </div>
+
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-500">
+                {{ consultasVM.length }} consulta(s) filtrada(s)
+              </span>
+              <button 
+                (click)="limparFiltros()"
+                class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+              >
+                Limpar Filtros
+              </button>
+            </div>
+          </div>
           <table class="w-full border-collapse">
             <!-- Header da Tabela -->
             <thead>
               <tr class="border-b border-gray-200 bg-gray-50">
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    (click)="ordenarPor('nome')">
+                  Nome
+                  <span *ngIf="ordenacaoCampo === 'nome'">
+                    {{ordenacaoDirecao === 'asc' ? '↑' : '↓'}}
+                  </span>
+                </th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CNS</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Especilidade</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data Solicitação</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data da COnsulta</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estab.</th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    (click)="ordenarPor('especialidade')">
+                  Especialidade
+                  <span *ngIf="ordenacaoCampo === 'especialidade'">
+                    {{ordenacaoDirecao === 'asc' ? '↑' : '↓'}}
+                  </span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    (click)="ordenarPor('dataSolicitacao')">
+                  Data Solicitação
+                  <span *ngIf="ordenacaoCampo === 'dataSolicitacao'">
+                    {{ordenacaoDirecao === 'asc' ? '↑' : '↓'}}
+                  </span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    (click)="ordenarPor('dataAgendamento')">
+                  Data da Consulta
+                  <span *ngIf="ordenacaoCampo === 'dataAgendamento'">
+                    {{ordenacaoDirecao === 'asc' ? '↑' : '↓'}}
+                  </span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    (click)="ordenarPor('status')">
+                  Status
+                  <span *ngIf="ordenacaoCampo === 'status'">
+                    {{ordenacaoDirecao === 'asc' ? '↑' : '↓'}}
+                  </span>
+                </th>
+                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer"
+                    (click)="ordenarPor('estabelecimento')">
+                  Estab.
+                  <span *ngIf="ordenacaoCampo === 'estabelecimento'">
+                    {{ordenacaoDirecao === 'asc' ? '↑' : '↓'}}
+                  </span>
+                </th>
                 <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
               </tr>
             </thead>
@@ -66,6 +193,7 @@
                     'bg-green-200 text-green-800': item.consulta.status === StatusConsulta.AGENDADA,
                     'bg-blue-100 text-blue-800': item.consulta.status === StatusConsulta.REALIZADA,
                     'bg-red-100 text-red-800': item.consulta.status === StatusConsulta.CANCELADA,
+                    'bg-red-900 text-red-100': item.consulta.status === StatusConsulta.URGENTE,
                     'bg-purple-100 text-purple-800': item.consulta.status === StatusConsulta.REAGENDADA,
                     'bg-green-100 text-green-800': item.consulta.status === StatusConsulta.NAO_COMPARECEU,
                     'px-2 py-1 rounded-full text-xs font-medium': true
@@ -109,7 +237,6 @@
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     <p class="text-lg font-medium mb-2">Nenhuma consulta encontrada</p>
-                    <p class="text-sm">Não há consultas registradas no sistema</p>
                   </div>
                 </td>
               </tr>

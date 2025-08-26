@@ -17,6 +17,7 @@ enum StatusConsulta {
     AGENDADA = 'Agendada',
     REAGENDADA = 'Reagendada',
     REALIZADA = 'Realizada',
+    URGENTE = 'Urgente', 
     CANCELADA = 'Cancelada',
     NAO_COMPARECEU = 'Não Compareceu'
     
