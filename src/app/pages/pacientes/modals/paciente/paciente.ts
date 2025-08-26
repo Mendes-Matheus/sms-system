@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
 import { RouterModule } from '@angular/router';
-import { PacienteModel } from './paciente.model';
+import { PacienteModel } from '../../../core/models/paciente.model';
 
 @Component({
   selector: 'app-paciente',

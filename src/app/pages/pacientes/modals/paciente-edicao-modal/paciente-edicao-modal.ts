@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgxMaskDirective } from 'ngx-mask';
-import { PacienteModel } from '../paciente/paciente.model';
+import { PacienteModel } from '../../../core/models/paciente.model';
 import { trigger, transition, style, animate } from '@angular/animations';
 
 @Component({
