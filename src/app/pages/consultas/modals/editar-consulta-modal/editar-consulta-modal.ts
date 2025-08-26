@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ConsultaModel, Estabelecimento, TipoConsulta, StatusConsulta } from '../../core/models/consulta.model';
+import { ConsultaModel, Estabelecimento, TipoConsulta, StatusConsulta } from '../../../../core/models/consulta.model';
 import { FormsModule, NgForm } from '@angular/forms';
-import { PacienteModel } from '../modals/paciente/paciente.model';
+import { PacienteModel } from '../../../../core/models/paciente.model';
 import { CommonModule } from '@angular/common';
 import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
@@ -24,7 +24,7 @@ export class EditarConsultaModal {
   @Input() consulta: ConsultaModel = {} as ConsultaModel;
   @Input() paciente: PacienteModel | null = null;
   @Input() statusOptions: string[] = [];
-  
+
   @Output() salvar = new EventEmitter<ConsultaModel>();
   @Output() fechar = new EventEmitter<void>();
 
@@ -34,18 +34,20 @@ export class EditarConsultaModal {
   dataMinima: Date = new Date();
 
   ngOnInit(): void {
-    this.mostrarCampoData = this.consulta.status === StatusConsulta.AGENDADA || 
-                           this.consulta.status === StatusConsulta.REAGENDADA;
-    
+    this.mostrarCampoData = this.consulta.status === StatusConsulta.AGENDADA ||
+                           this.consulta.status === StatusConsulta.REAGENDADA ||
+                           this.consulta.status === StatusConsulta.REALIZADA;
+
     this.mostrarCampoObservacao = this.consulta.status === StatusConsulta.CANCELADA;
   }
 
   onStatusChange(): void {
-    this.mostrarCampoData = this.consulta.status === StatusConsulta.AGENDADA || 
-                           this.consulta.status === StatusConsulta.REAGENDADA;
-    
+    this.mostrarCampoData = this.consulta.status === StatusConsulta.AGENDADA ||
+                           this.consulta.status === StatusConsulta.REAGENDADA ||
+                           this.consulta.status === StatusConsulta.REALIZADA;
+
     this.mostrarCampoObservacao = this.consulta.status === StatusConsulta.CANCELADA;
-    
+
     if (!this.mostrarCampoData) {
       this.consulta.dataAgendamento = undefined;
     } else if (!this.consulta.dataAgendamento) {
@@ -53,7 +55,7 @@ export class EditarConsultaModal {
       amanha.setDate(amanha.getDate() + 1);
       this.consulta.dataAgendamento = amanha;
     }
-    
+
     if (!this.mostrarCampoObservacao) {
       this.consulta.observacao = '';
     }
@@ -72,18 +74,18 @@ export class EditarConsultaModal {
     if (!this.consulta.status) {
       return false;
     }
-    
-    if ((this.consulta.status === StatusConsulta.AGENDADA || 
+
+    if ((this.consulta.status === StatusConsulta.AGENDADA ||
          this.consulta.status === StatusConsulta.REAGENDADA) &&
         !this.consulta.dataAgendamento) {
       return false;
     }
-    
-    if (this.consulta.status === StatusConsulta.CANCELADA && 
+
+    if (this.consulta.status === StatusConsulta.CANCELADA &&
         (!this.consulta.observacao || this.consulta.observacao.trim() === '')) {
       return false;
     }
-    
+
     return true;
   }
 
@@ -93,11 +95,11 @@ export class EditarConsultaModal {
 
   salvarEdicao(): void {
     this.validarDataAgendamento();
-    
+
     if (this.dataInvalida) {
       return;
     }
-    
+
     if (this.formularioValido()) {
       this.salvar.emit(this.consulta);
     }

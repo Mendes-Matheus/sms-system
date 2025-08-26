@@ -1,17 +1,15 @@
-import { Component, ChangeDetectionStrategy, OnInit, inject, ViewChild } from '@angular/core';
-import { CommonModule, formatDate } from '@angular/common';
-import { FormsModule, NgForm } from '@angular/forms';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
-import { Paciente } from '../modals/paciente/paciente';
-import { PacienteService } from '../../core/services/paciente.service';
-import { PacienteModel } from '../modals/paciente/paciente.model';
-import { NgbDate, NgbDateStruct, NgbCalendar, NgbDatepickerModule } from '@ng-bootstrap/ng-bootstrap';
-import { MatInputModule } from '@angular/material/input';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import {ChangeDetectionStrategy, Component, OnInit, ViewChild} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormsModule, NgForm} from '@angular/forms';
+import {ActivatedRoute, Router, RouterModule} from '@angular/router';
+import {NgxMaskDirective, provideNgxMask} from 'ngx-mask';
+import {PacienteService} from '../../core/services/paciente.service';
+import {PacienteModel} from '../../core/models/paciente.model';
+import {NgbCalendar, NgbDate, NgbDatepickerModule, NgbDateStruct} from '@ng-bootstrap/ng-bootstrap';
+import {MatInputModule} from '@angular/material/input';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatIconModule} from '@angular/material/icon';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 
 @Component({

@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid'
-import { Consultas } from '../../consultas/consultas';
+import { Consultas } from '../../pages/consultas/consultas';
 
 
 export class PacienteModel {

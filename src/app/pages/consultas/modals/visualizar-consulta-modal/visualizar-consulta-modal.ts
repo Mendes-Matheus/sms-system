@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, NgModule, OnInit, Output } from '@angular/core';
-import { ConsultaModel, Estabelecimento, TipoConsulta, StatusConsulta } from '../../core/models/consulta.model';
+import { ConsultaModel, Estabelecimento, TipoConsulta, StatusConsulta } from '../../../../core/models/consulta.model';
 import { FormsModule, NgForm } from '@angular/forms';
-import { PacienteModel } from '../modals/paciente/paciente.model';
+import { PacienteModel } from '../../../../core/models/paciente.model';
 import { CommonModule } from '@angular/common';
 import { NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 
@@ -21,7 +21,7 @@ export class VisualizarConsultaModal {
 
   @Input() consulta: ConsultaModel = {} as ConsultaModel;
   @Input() paciente: PacienteModel | null = null;
-  
+
   @Output() fechar = new EventEmitter<void>();
   @Output() editar = new EventEmitter<ConsultaModel>();
 
