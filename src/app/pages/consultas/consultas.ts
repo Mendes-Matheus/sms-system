@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { ConsultaModel, Estabelecimento, TipoConsulta, StatusConsulta } from '../../core/models/consulta.model';
 import { ConsultaService } from '../../core/services/consulta.service';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,6 +10,9 @@ import { CommonModule } from '@angular/common';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
 import { EditarConsultaModal } from './modals/editar-consulta-modal/editar-consulta-modal';
 import { VisualizarConsultaModal } from "./modals/visualizar-consulta-modal/visualizar-consulta-modal";
+import { FiltrosConsulta } from '../../core/interfaces/filtros-consulta';
+import { OrdenacaoConfig } from '../../core/interfaces/ordenacao-config';
+import { FilterUtils } from '../../core/utils/filter-utils';
 
 interface ConsultaView {
   nome: string;
@@ -29,7 +32,8 @@ interface ConsultaView {
 ],
   templateUrl: './consultas.html',
   styleUrl: './consultas.scss',
-  providers: [provideNgxMask()]
+  providers: [provideNgxMask()],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Consultas implements OnInit {
 
@@ -53,12 +57,13 @@ export class Consultas implements OnInit {
   modalEdicaoAberto = false;
   consultaSelecionada: ConsultaModel = {} as ConsultaModel;
 
-  // Propriedades para ordenação
-  ordenacaoCampo: string = '';
-  ordenacaoDirecao: 'asc' | 'desc' = 'asc';
+  ordenacao: OrdenacaoConfig = {
+    campo: '',
+    direcao: 'asc'
+  };
   
   // Propriedades para filtros
-  filtros: any = {
+  filtros: FiltrosConsulta = {
     especialidade: '',
     dataSolicitacao: '',
     dataAtendimento: '',
@@ -73,8 +78,6 @@ export class Consultas implements OnInit {
   statusConsulta: string[] = [];
   estabelecimentos: string[] = [];
 
-  
-  
   // Propriedade para busca
   termoBusca: string = '';
   
@@ -132,11 +135,11 @@ export class Consultas implements OnInit {
   /* ----------------------- ORDENACAO --------------------------------*/
   /* ------------------------------------------------------------------ */
   ordenarPor(campo: string): void {
-    if (this.ordenacaoCampo === campo) {
-      this.ordenacaoDirecao = this.ordenacaoDirecao === 'asc' ? 'desc' : 'asc';
+    if (this.ordenacao.campo === campo) {
+      this.ordenacao.direcao = this.ordenacao.direcao === 'asc' ? 'desc' : 'asc';
     } else {
-      this.ordenacaoCampo = campo;
-      this.ordenacaoDirecao = 'asc';
+      this.ordenacao.campo = campo;
+      this.ordenacao.direcao = 'asc';
     }
     
     this.aplicarOrdenacao();
@@ -147,7 +150,7 @@ export class Consultas implements OnInit {
       let valorA: any;
       let valorB: any;
       
-      switch (this.ordenacaoCampo) {
+      switch (this.ordenacao.campo) {
         case 'especialidade':
           valorA = a.consulta.tipoConsulta || '';
           valorB = b.consulta.tipoConsulta || '';
@@ -183,10 +186,10 @@ export class Consultas implements OnInit {
       
       // Comparação para ordenação
       if (valorA < valorB) {
-        return this.ordenacaoDirecao === 'asc' ? -1 : 1;
+        return this.ordenacao.direcao === 'asc' ? -1 : 1;
       }
       if (valorA > valorB) {
-        return this.ordenacaoDirecao === 'asc' ? 1 : -1;
+        return this.ordenacao.direcao === 'asc' ? 1 : -1;
       }
       return 0;
     });
@@ -199,36 +202,24 @@ export class Consultas implements OnInit {
   /* ------------------------------------------------------------------ */
 
   aplicarFiltros(): void {
-    this.consultasFiltradas = this.consultasOriginais.filter(consulta => {
-      return this.filtrarPorCampo('tipoConsulta', this.filtros.especialidade, consulta.consulta) &&
-            this.filtrarPorData('dataSolicitacao', this.filtros.dataSolicitacao, consulta.consulta) &&
-            this.filtrarPorData('dataAgendamento', this.filtros.dataAtendimento, consulta.consulta) &&
-            this.filtrarPorData('dataAgendamento', this.filtros.dataConsulta, consulta.consulta) &&
-            this.filtrarPorData('dataAgendamento', this.filtros.dataAgendamento, consulta.consulta) &&
-            this.filtrarPorCampo('status', this.filtros.status, consulta.consulta) &&
-            this.filtrarPorCampo('estabelecimento', this.filtros.estabelecimento, consulta.consulta);
-    });
+    this.consultasFiltradas = this.consultasOriginais.filter(consulta => 
+      this.aplicarTodosFiltros(consulta)
+    );
     
     this.aplicarBusca();
     this.aplicarOrdenacao();
   }
 
-  filtrarPorCampo(campo: string, valorFiltro: string, objeto: any): boolean {
-    if (!valorFiltro) return true;
-    
-    const valor = objeto[campo] || '';
-    return valor.toString().toLowerCase().includes(valorFiltro.toLowerCase());
+  private aplicarTodosFiltros(consulta: ConsultaView): boolean {
+    return FilterUtils.filtrarPorCampo(consulta.consulta.tipoConsulta, this.filtros.especialidade) &&
+          FilterUtils.filtrarPorData(consulta.consulta.dataSolicitacao, this.filtros.dataSolicitacao) &&
+          FilterUtils.filtrarPorData(consulta.consulta.dataAgendamento, this.filtros.dataAtendimento) &&
+          FilterUtils.filtrarPorData(consulta.consulta.dataAgendamento, this.filtros.dataConsulta) &&
+          FilterUtils.filtrarPorData(consulta.consulta.dataAgendamento, this.filtros.dataAgendamento) &&
+          FilterUtils.filtrarPorCampo(consulta.consulta.status, this.filtros.status) &&
+          FilterUtils.filtrarPorCampo(consulta.consulta.estabelecimento, this.filtros.estabelecimento);
   }
 
-  filtrarPorData(campo: string, dataFiltro: string, objeto: any): boolean {
-    if (!dataFiltro) return true;
-    if (!objeto[campo]) return false;
-    
-    const data = new Date(objeto[campo]);
-    const dataFiltroDate = new Date(dataFiltro);
-    
-    return data.toDateString() === dataFiltroDate.toDateString();
-  }
 
   limparFiltros(): void {
     this.filtros = {

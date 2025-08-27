@@ -1,5 +1,16 @@
 import { v4 as uuid } from 'uuid'
 
+
+enum FiltrosConsultas {
+    ESPECIALIDADE = 'especialidade',
+    DATA_SOLICITACAO = 'dataSolicitacao',
+    DATA_ATENDIMENTO = 'dataAtendimento',
+    DATA_CONSULTA = 'dataConsulta',
+    DATA_AGENDAMENTO = 'dataAgendamento',
+    STATUS = 'status',
+    ESTABELECIMENTO = 'estabelecimento'
+}
+
 enum TipoConsulta {
     NEUROCIRURGIAO = 'Neurocirurgião',
     ORTOPEDISTA = 'Ortopedista',
@@ -49,4 +60,4 @@ export class ConsultaModel {
     }
 }
 
-export { TipoConsulta, StatusConsulta, Estabelecimento };
+export { TipoConsulta, StatusConsulta, Estabelecimento, FiltrosConsultas };
