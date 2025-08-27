@@ -32,7 +32,6 @@ interface ConsultaView {
   providers: [provideNgxMask()]
 })
 export class Consultas implements OnInit {
-[x: string]: any;
 
   consultasVM: ConsultaView[] = [];
   TipoConsulta = TipoConsulta;

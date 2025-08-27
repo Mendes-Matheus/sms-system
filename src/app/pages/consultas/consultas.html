@@ -5,21 +5,18 @@
       <!-- Header -->
       <div class="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
         <h1 class="text-xl font-bold text-gray-900">Consultas</h1>
-        <span class="text-sm text-gray-500">
-          {{ consultasVM.length }} consulta(s) encontrada(s)
-        </span>
       </div>
 
       
 
       <!-- Content -->
-      <div class="p-6">
+      <div class="p-4">
         <!-- Tabela Responsiva -->
         <div class="overflow-x-auto">
           <!-- ------------------------------------------------------------ -->
           <!------------------------ Controles de Busca e Filtros --------------->
           <!-- ------------------------------------------------------------ -->
-          <div class="p-4 bg-gray-50 border-b border-gray-200">
+          <div class="p-4 bg-gray-50 rounded-lg border-b border-gray-200">
             <!-- Filtros -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
               <!-- Busca por nome ou CNS -->
@@ -30,11 +27,11 @@
                     type="text" 
                     id="busca" 
                     [(ngModel)]="termoBusca" 
-                    class="flex-1 px-2 py-1.6 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class=" w-full px-3 py-2 rounded-l-md border border-gray-300 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   >
                   <button 
                     (click)="onBuscar()"
-                    class="px-2 py-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-500"
+                    class="px-2 bg-blue-600 text-white rounded-r-md hover:bg-blue-500"
                   >
                     Buscar
                   </button>
@@ -46,7 +43,7 @@
                 <select 
                   [(ngModel)]="filtros.especialidade" 
                   (change)="aplicarFiltros()"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Todas</option>
                   <option *ngFor="let tipo of tiposConsulta" [value]="tipo">{{tipo}}</option>
@@ -59,7 +56,7 @@
                 <select 
                   [(ngModel)]="filtros.status" 
                   (change)="aplicarFiltros()"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Todos</option>
                   <option *ngFor="let status of statusConsulta" [value]="status">{{status}}</option>
@@ -72,7 +69,7 @@
                 <select 
                   [(ngModel)]="filtros.estabelecimento" 
                   (change)="aplicarFiltros()"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  class="w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">Todos</option>
                   <option *ngFor="let estab of estabelecimentos" [value]="estab">{{estab}}</option>
@@ -91,18 +88,30 @@
               </div>
             </div> -->
 
-            <div class="flex justify-between">
+            <!-- <div class="flex justify-between items-center my-2">
               <span class="text-sm text-gray-500">
                 {{ consultasVM.length }} consulta(s) filtrada(s)
               </span>
               <button 
                 (click)="limparFiltros()"
-                class="px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+                class=" px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
+              >
+                Limpar Filtros
+              </button>
+            </div> -->
+          </div>
+
+          <div class="flex justify-between items-center my-6">
+              <span class="text-sm text-gray-500">
+                {{ consultasVM.length }} consulta(s) encontrada(s)
+              </span>
+              <button 
+                (click)="limparFiltros()"
+                class=" px-4 py-2 text-sm text-gray-600 hover:text-gray-800"
               >
                 Limpar Filtros
               </button>
             </div>
-          </div>
           <table class="w-full border-collapse">
             <!-- Header da Tabela -->
             <thead>
@@ -155,7 +164,7 @@
             </thead>
 
             <!-- Body da Tabela -->
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="bg-white border border-gray-200 divide-y divide-gray-200">
               <tr *ngFor="let item of consultasVM" class="hover:bg-gray-50 transition-colors">
                 <!-- Nome -->
                 <td class="px-4 py-4 text-sm text-gray-900">
@@ -245,7 +254,7 @@
         <!-- Paginação (opcional) -->
         <div *ngIf="consultasVM.length > 0" class="mt-6 flex justify-between items-center">
           <div class="text-sm text-gray-500">
-            Exibindo {{ consultasVM.length }} registros
+            Exibindo {{ consultasVM.length }} registro(s)
           </div>
           
           <!-- Aqui pode adicionar controles de paginação se necessário -->
