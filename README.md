@@ -1,59 +1,64 @@
-# SmsSystemFront
+# 🏥 SMS System
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
+Este projeto é uma aplicação desenvolvida em **Angular** para gerenciar **pacientes e procedimentos médicos**.
+Projetado para facilitar o cadastro, agendamento e controle de procedimentos em estabelecimentos de saúde.
 
-## Development server
+---
 
-To start a local development server, run:
+## ⚙️ Funcionalidades Principais
+
+  - **Gestão de Pacientes**
+      - Cadastro de pacientes
+      - Associação de múltiplos procedimentos médicos
+      - Histórico e observações clínicas
+
+---
+
+## 💾 Persistência de Dados
+
+Este projeto utiliza o **Local Storage** do navegador para armazenar e recuperar dados de pacientes e procedimentos. Não é necessário configurar um backend ou banco de dados externo para a execução local da aplicação.
+
+---
+
+## 🚀 Instalação e Execução
+
+Siga os passos abaixo para clonar o repositório, instalar as dependências e executar o projeto em seu ambiente local.
+
+### Pré-requisitos
+
+Certifique-se de ter as seguintes ferramentas instaladas em seu sistema:
+
+  * **Node.js** (versão recomendada: 20.x ou mais recente)
+  * **npm** (gerenciador de pacotes do Node.js)
+  * **Angular CLI** (instale globalmente se ainda não o tiver):
+    ```bash
+    npm install -g @angular/cli
+    ```
+
+### 1. Clonar o Repositório
+
+Abra o terminal ou prompt de comando e clone o projeto:
+
+```bash
+git clone git@github.com:Mendes-Matheus/sms-system.git
+cd sms-system
+```
+
+### 2. Instalar Dependências
+
+Dentro do diretório do projeto, instale todas as dependências necessárias:
+
+```bash
+npm install
+```
+
+### 3. Executar a Aplicação
+
+Para iniciar o servidor de desenvolvimento do Angular, utilize o comando:
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+A aplicação será compilada e estará disponível em `http://localhost:4200/` (ou em outra porta, dependendo da sua configuração). O navegador deve abrir automaticamente.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
